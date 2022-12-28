@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">悟题</string>
+    <string name="problem_list">错题列表</string>
+    <string name="folder">错题夹</string>
+    <string name="create_folder">创建错题夹</string>
+    <string name="profile">我的</string>
+</resources>

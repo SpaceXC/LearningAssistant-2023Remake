@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">LearningAssistant-2023Remake</string>
+    <string name="app_name">LearningAssistant</string>
+    <string name="problem_list">Problem List</string>
+    <string name="folder">Folder</string>
+    <string name="create_folder">Create Folder</string>
+    <string name="profile">Profile</string>
 </resources>

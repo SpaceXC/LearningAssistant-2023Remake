@@ -4,4 +4,15 @@
     <string name="folder">Folder</string>
     <string name="create_folder">Create Folder</string>
     <string name="profile">Profile</string>
+    <string name="delete_all">Delete All</string>
+    <string name="sync">Sync</string>
+    <string name="change_order">Change Display Order</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_confrimation">Delete All Confirmation</string>
+    <string name="delete_confrimation_description">Are you sure you\'re going to delete ALL the problems? This action CAN\'T be undone!</string>
+    <string name="logout">Logout</string>
+    <string name="logout_confirmation">Are you sure you are going to logout?</string>
+    <string name="sync_complete">Sync Complete</string>
+    <string name="logout_successfully">Successfully Logged Out</string>
 </resources>

@@ -16,7 +16,8 @@ This is free software, and you are welcome to redistribute it under certain cond
  * 给！爷！写！注！释！
  */
 
-const val VERSION_NAME = "Rel-AL 0.0.1"
+const val VERSION_NAME = "Rel-AL 0.0.2"
+const val TAG = "LearningAssistantTag"
 
 class Application : android.app.Application() {
     override fun onCreate() {

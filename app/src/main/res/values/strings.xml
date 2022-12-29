@@ -9,7 +9,7 @@
     <string name="change_order">Change Display Order</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
-    <string name="delete_confrimation">Delete All Confirmation</string>
+    <string name="delete_confrimation">Delete All</string>
     <string name="delete_confrimation_description">Are you sure you\'re going to delete ALL the problems? This action CAN\'T be undone!</string>
     <string name="logout">Logout</string>
     <string name="logout_confirmation">Are you sure you are going to logout?</string>
@@ -18,4 +18,17 @@
     <string name="login_button_text">Login to your account</string>
     <string name="version_text">Version</string>
     <string name="username">Username</string>
+    <string name="back">Back</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="login_successfully">Login Successfully</string>
+    <string name="login_failed">Login Failed</string>
+    <string name="current_user_text">Current User</string>
+    <string name="sync_failed">Sync Failed</string>
+    <string name="update_at_text">Update at</string>
+    <string name="fully_understanded">Fully understanded</string>
+    <string name="completely_misunderstand">Completely misunderstand</string>
+    <string name="understanded">Understanded</string>
+    <string name="descend">Descend</string>
+    <string name="ascend">Ascend</string>
 </resources>

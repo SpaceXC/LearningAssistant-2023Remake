@@ -19,4 +19,17 @@
     <string name="login_button_text">登录您的账户</string>
     <string name="version_text">版本号</string>
     <string name="username">用户名</string>
+    <string name="back">返回</string>
+    <string name="password">密码</string>
+    <string name="login">登录</string>
+    <string name="login_successfully">登录成功</string>
+    <string name="login_failed">登录失败</string>
+    <string name="current_user_text">当前用户</string>
+    <string name="sync_failed">同步失败</string>
+    <string name="update_at_text">更新于</string>
+    <string name="fully_understanded">完全掌握</string>
+    <string name="completely_misunderstand">完全没有掌握</string>
+    <string name="understanded">掌握了</string>
+    <string name="descend">降序</string>
+    <string name="ascend">升序</string>
 </resources>

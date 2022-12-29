@@ -1,8 +1,10 @@
 package cn.spacexc.learningassistant2023.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,11 +29,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import cn.leancloud.LCUser
 import cn.spacexc.learningassistant2023.R
 import cn.spacexc.learningassistant2023.VERSION_NAME
+import cn.spacexc.learningassistant2023.entity.toProblemEntity
 import cn.spacexc.learningassistant2023.ui.component.ProblemCard
 import cn.spacexc.learningassistant2023.ui.theme.AppTheme
 import cn.spacexc.learningassistant2023.ui.theme.gooLiBabaPuhuiSansFamily
+import cn.spacexc.learningassistant2023.viewmodel.ProblemListViewModel
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -60,6 +65,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private val navItems = listOf(Screen.List, Screen.Folder, Screen.Profile)
+
+    private val viewModel: ProblemListViewModel by viewModels()
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -122,8 +129,12 @@ class MainActivity : ComponentActivity() {
         var deleteAllDialogShowing by remember {
             mutableStateOf(false)
         }
+        val problemList by viewModel.problemList
         val snackBarHostState = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope()
+        var isListDescended by remember {
+            mutableStateOf(true)
+        }
         if (deleteAllDialogShowing) {
             AlertDialog(onDismissRequest = { deleteAllDialogShowing = false }, confirmButton = {
                 TextButton(onClick = { deleteAllDialogShowing = false }) {
@@ -188,16 +199,18 @@ class MainActivity : ComponentActivity() {
                                 DropdownMenuItem(
                                     text = { Text(stringResource(id = R.string.sync)) },
                                     onClick = {
-                                        scope.launch {
-                                            snackBarHostState.showSnackbar(
-                                                message = getString(
-                                                    R.string.sync_complete
-                                                ),
-                                                actionLabel = getString(R.string.confirm),
-                                                duration = SnackbarDuration.Short
-                                            )
-                                        }
                                         menuExpanded = false
+                                        viewModel.getProblems {
+                                            scope.launch {
+                                                snackBarHostState.showSnackbar(
+                                                    message = getString(
+                                                        if (it) R.string.sync_complete else R.string.sync_failed
+                                                    ),
+                                                    actionLabel = getString(R.string.confirm),
+                                                    duration = SnackbarDuration.Short
+                                                )
+                                            }
+                                        }
                                     },
                                     leadingIcon = {
                                         Icon(
@@ -210,20 +223,26 @@ class MainActivity : ComponentActivity() {
                                 DropdownMenuItem(
                                     text = { Text(stringResource(id = R.string.change_order)) },
                                     onClick = {
-
+                                        isListDescended = !isListDescended
                                     },
                                     leadingIcon = {
                                         Icon(
                                             Icons.Outlined.Sort,
                                             contentDescription = null
                                         )
+                                    },
+                                    trailingIcon = {
+                                        Text(
+                                            if (isListDescended) stringResource(id = R.string.descend) else stringResource(
+                                                id = R.string.ascend
+                                            ), textAlign = TextAlign.Center
+                                        )
                                     }
                                 )
+
                             }
                         }
-                    },
-                    scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-
+                    }
                 )
             }, floatingActionButton = {
                 FloatingActionButton(onClick = { }) {
@@ -244,9 +263,15 @@ class MainActivity : ComponentActivity() {
                     horizontal = 14.dp
                 )
             ) {
-                repeat(50) {
+                (if (isListDescended) problemList.asReversed() else problemList).forEach {
+                    val problem = it.toProblemEntity()
                     item {
-                        ProblemCard(problemTitle = "Problem ${it.plus(1)}")
+                        ProblemCard(
+                            problemTitle = problem.problemSource,
+                            subject = problem.subject,
+                            updateTime = problem.updateTimeString,
+                            rate = problem.problemRate.toFloat()
+                        )
                     }
                 }
             }
@@ -266,8 +291,7 @@ class MainActivity : ComponentActivity() {
                             overflow = TextOverflow.Ellipsis,
                             fontFamily = gooLiBabaPuhuiSansFamily
                         )
-                    },
-                    scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(canScroll = { true })
+                    }
                 )
             }, floatingActionButton = {
                 FloatingActionButton(onClick = { }) {
@@ -314,6 +338,11 @@ class MainActivity : ComponentActivity() {
             }, confirmButton = {
                 TextButton(onClick = {
                     isLogoutDialogShowing = false
+                    LCUser.logOut()
+                    Intent(this, LoginActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(this)
+                    }
                     scope.launch {
                         snackBarHostState.showSnackbar(
                             message = getString(R.string.logout_successfully),
@@ -343,16 +372,17 @@ class MainActivity : ComponentActivity() {
                         )
                     },
                     actions = {
-                        IconButton(onClick = {
-                            isLogoutDialogShowing = true
-                        }) {
-                            Icon(
-                                imageVector = Icons.Filled.Logout,
-                                contentDescription = stringResource(id = R.string.logout)
-                            )
+                        LCUser.currentUser()?.let {
+                            IconButton(onClick = {
+                                isLogoutDialogShowing = true
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Logout,
+                                    contentDescription = stringResource(id = R.string.logout)
+                                )
+                            }
                         }
                     },
-                    scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(canScroll = { true })
                 )
             }
         ) {
@@ -361,18 +391,28 @@ class MainActivity : ComponentActivity() {
                     .fillMaxSize()
                     .padding(it), verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Button(onClick = { }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                    Text(text = stringResource(id = R.string.login_button_text))
+                if (LCUser.currentUser() == null) {
+                    Button(onClick = {
+                        startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+                    }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                        Text(text = stringResource(id = R.string.login_button_text))
+                    }
                 }
-                ListItem(leadingContent = {
-                    Icon(imageVector = Icons.Outlined.AccountCircle, contentDescription = null)
-                }, headlineText = {
-                    Text(text = stringResource(id = R.string.username), fontSize = 18.sp)
-                }, supportingText = {
-                    Text(text = "Your Username")
-                }, trailingContent = {
-                    Icon(imageVector = Icons.Default.ArrowForwardIos, contentDescription = null)
-                }, modifier = Modifier.clickable { })
+
+                LCUser.currentUser()?.let {
+                    ListItem(leadingContent = {
+                        Icon(imageVector = Icons.Outlined.AccountCircle, contentDescription = null)
+                    }, headlineText = {
+                        Text(
+                            text = stringResource(id = R.string.current_user_text),
+                            fontSize = 18.sp
+                        )
+                    }, supportingText = {
+                        Text(text = it.username)
+                    }, trailingContent = {
+                        Icon(imageVector = Icons.Default.ArrowForwardIos, contentDescription = null)
+                    }, modifier = Modifier.clickable { })
+                }
 
                 ListItem(leadingContent = {
                     Icon(imageVector = Icons.Outlined.Info, contentDescription = null)

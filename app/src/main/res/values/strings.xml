@@ -15,4 +15,7 @@
     <string name="logout_confirmation">Are you sure you are going to logout?</string>
     <string name="sync_complete">Sync Complete</string>
     <string name="logout_successfully">Successfully Logged Out</string>
+    <string name="login_button_text">Login to your account</string>
+    <string name="version_text">Version</string>
+    <string name="username">Username</string>
 </resources>

@@ -5,13 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Sort
-import androidx.compose.material.icons.outlined.Sync
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -28,6 +28,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import cn.spacexc.learningassistant2023.R
+import cn.spacexc.learningassistant2023.VERSION_NAME
 import cn.spacexc.learningassistant2023.ui.component.ProblemCard
 import cn.spacexc.learningassistant2023.ui.theme.AppTheme
 import cn.spacexc.learningassistant2023.ui.theme.gooLiBabaPuhuiSansFamily
@@ -358,9 +359,28 @@ class MainActivity : ComponentActivity() {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(it)
+                    .padding(it), verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
+                Button(onClick = { }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                    Text(text = stringResource(id = R.string.login_button_text))
+                }
+                ListItem(leadingContent = {
+                    Icon(imageVector = Icons.Outlined.AccountCircle, contentDescription = null)
+                }, headlineText = {
+                    Text(text = stringResource(id = R.string.username), fontSize = 18.sp)
+                }, supportingText = {
+                    Text(text = "Your Username")
+                }, trailingContent = {
+                    Icon(imageVector = Icons.Default.ArrowForwardIos, contentDescription = null)
+                }, modifier = Modifier.clickable { })
 
+                ListItem(leadingContent = {
+                    Icon(imageVector = Icons.Outlined.Info, contentDescription = null)
+                }, headlineText = {
+                    Text(text = stringResource(id = R.string.version_text), fontSize = 18.sp)
+                }, supportingText = {
+                    Text(text = VERSION_NAME)
+                })
             }
         }
     }

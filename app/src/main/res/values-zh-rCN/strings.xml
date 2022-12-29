@@ -10,10 +10,13 @@
     <string name="change_order">改变顺序</string>
     <string name="confirm">确定</string>
     <string name="cancel">取消</string>
-    <string name="delete_confrimation">删除所有？</string>
+    <string name="delete_confrimation">删除所有</string>
     <string name="delete_confrimation_description">你确定要删除所有错题吗？这个操作不能撤销！</string>
-    <string name="logout">登出？</string>
+    <string name="logout">登出</string>
     <string name="logout_confirmation">你确定要登出账号吗？</string>
     <string name="sync_complete">同步完成</string>
     <string name="logout_successfully">登出成功</string>
+    <string name="login_button_text">登录您的账户</string>
+    <string name="version_text">版本号</string>
+    <string name="username">用户名</string>
 </resources>
